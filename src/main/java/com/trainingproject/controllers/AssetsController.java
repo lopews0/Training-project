@@ -1,32 +1,28 @@
 package com.trainingproject.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Arrays;
-import java.util.List;
+import com.trainingproject.dtos.AssetsDto;
+import com.trainingproject.services.AssetsService;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/assets")
 public class AssetsController {
 
+    private final AssetsService assetsService;
+
+    public AssetsController(AssetsService assetsService) {
+        this.assetsService = assetsService;
+    }
+
     @GetMapping
-    public Dto getAssets() {
-        Dto dto = new Dto();
-        dto.setAssets(Arrays.asList(1, 2, 3));
-        return dto;
+    public AssetsDto getAssets() {
+        return assetsService.getAssets();
     }
 
-    private class Dto {
-        private List<Integer> assets;
-
-        public List<Integer> getAssets() {
-            return assets;
-        }
-
-        public void setAssets(List<Integer> assets) {
-            this.assets = assets;
-        }
+    @PostMapping("/{asset}")
+    public void setAsset(@PathVariable int asset) {
+        assetsService.setAsset(asset);
     }
+
+
 }
