@@ -16,7 +16,7 @@ public class AssetsService {
     }
 
     public void setAsset(int asset) {
-        if (Objects.isNull(assetsDto.getAssets())) {
+        if (assetsDto.getAssets() == null) {
             assetsDto.setAssets(new ArrayList<>());
         }
         assetsDto.getAssets().add(asset);
