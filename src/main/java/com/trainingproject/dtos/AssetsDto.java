@@ -33,4 +33,5 @@ public class AssetsDto {
                 "assets=" + assets +
                 '}';
     }
+
 }

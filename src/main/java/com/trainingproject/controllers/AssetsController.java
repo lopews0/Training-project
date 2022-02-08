@@ -21,6 +21,7 @@ public class AssetsController {
 
     @PostMapping("/{asset}")
     public void setAsset(@PathVariable int asset) {
+
         assetsService.setAsset(asset);
     }
 
