@@ -13,10 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class AssetsServiceTest {
 
-    @BeforeEach
-    void setUp() {
-
-    }
+  
 
     @Autowired
     AssetsRepository assetsRepository;

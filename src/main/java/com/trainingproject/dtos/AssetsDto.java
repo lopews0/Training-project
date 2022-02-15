@@ -32,6 +32,7 @@ public class AssetsDto {
         return "AssetsDto{" +
                 "assets=" + assets +
                 '}';
+
     }
 
 }
