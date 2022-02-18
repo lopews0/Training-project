@@ -1,5 +1,6 @@
 package com.trainingproject.controllers;
 
+import com.trainingproject.dtos.AssetDto;
 import com.trainingproject.dtos.AssetsDto;
 import com.trainingproject.services.AssetsService;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +20,13 @@ public class AssetsController {
         return assetsService.getAssets();
     }
 
-    @PostMapping("/{asset}")
-    public void setAsset(@PathVariable int asset) {
-
-        assetsService.setAsset(asset);
+    @PostMapping
+    public void setAsset(@RequestBody AssetDto assetDto) {;
+        assetsService.setAsset(assetDto);
     }
 
-
+    @DeleteMapping
+    public void deleteAsset(@RequestBody AssetDto assetDto) {
+        assetsService.deleteAsset(assetDto);
+    }
 }
