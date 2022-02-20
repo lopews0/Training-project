@@ -2,13 +2,13 @@ package com.trainingproject.services;
 
 import com.trainingproject.domain.Asset;
 import com.trainingproject.dtos.AssetDto;
-import com.trainingproject.dtos.AssetsDto;
 import com.trainingproject.mappers.AssetsMapper;
 import com.trainingproject.repositories.AssetsRepository;
 import com.trainingproject.validators.AssetValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,15 +23,10 @@ public class AssetsService {
         this.assetValidator = assetValidator;
     }
 
-    public AssetsDto getAssets() {
-
-        List<Integer> assetsAmount = assetsRepository.findAll().stream()
-                .map(asset -> asset.getAmount().intValue())
+    public List<AssetDto> getAssets() {
+        return assetsRepository.findAll().stream()
+                .map(assetsMapper::fromEntityToDto)
                 .collect(Collectors.toList());
-
-        AssetsDto assetsDto = new AssetsDto();
-        assetsDto.setAssets(assetsAmount);
-        return assetsDto;
     }
 
     public void setAsset(AssetDto assetDto) {
@@ -44,5 +39,14 @@ public class AssetsService {
     public void deleteAsset(AssetDto assetDto) {
         Asset asset = assetsMapper.fromDtoToEntity(assetDto);
         assetsRepository.delete(asset);
+    }
+
+    public void updateAsset(AssetDto assetDto) {
+        Optional<Asset> assetById = assetsRepository.findById(assetDto.getId());
+
+        assetById.ifPresent(asset -> {
+            asset.setAmount(assetDto.getAmount());
+            assetsRepository.saveAndFlush(asset);
+        });
     }
 }

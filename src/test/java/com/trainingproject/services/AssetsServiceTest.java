@@ -2,7 +2,6 @@ package com.trainingproject.services;
 
 import com.trainingproject.domain.Asset;
 import com.trainingproject.dtos.AssetDto;
-import com.trainingproject.dtos.AssetsDto;
 import com.trainingproject.enums.ValidatorAssetEnum;
 import com.trainingproject.exceptions.AssetIncompleteException;
 import com.trainingproject.mappers.AssetsMapper;
@@ -16,9 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -44,41 +45,44 @@ class AssetsServiceTest {
     @Test
     void getAssets() {
         //given
-
+        var assetVal = new BigDecimal(2);
         Asset asset = new Asset.AssetBuilder()
-                .withAmount(new BigDecimal(2))
+                .withAmount(assetVal)
                 .build();
         given(assetsRepository.findAll()).willReturn(List.of(asset));
 
         //when
-        AssetsDto assets = assetsService.getAssets();
+        List<AssetDto> assets = assetsService.getAssets();
 
         //then
-        assertThat(assets.getAssets())
+        assertThat(assets)
                 .hasSize(1)
-                .containsExactly(2);
+                .contains(new AssetDto.AssetDtoBuilder().withAmount(assetVal).build());
 
     }
 
     @Test
     void getAssets2() {
         //given
-        int asset1 = 3;
-        int asset2 = 4;
+        var asset1 = new BigDecimal(3);
+        var asset2 = new BigDecimal(4);
         Asset as1 = new Asset.AssetBuilder()
-                .withAmount(new BigDecimal(asset1))
+                .withAmount(asset1)
                 .build();
         Asset as2 = new Asset.AssetBuilder()
-                .withAmount(new BigDecimal(asset2))
+                .withAmount(asset2)
                 .build();
         given(assetsRepository.findAll()).willReturn(List.of(as1, as2));
         //when
-        AssetsDto assets = assetsService.getAssets();
+        List<AssetDto> assets = assetsService.getAssets();
 
         //then
-        assertThat(assets.getAssets())
+        assertThat(assets  )
                 .hasSize(2)
-                .containsExactly(asset1, asset2);
+                .containsExactly(
+                        new AssetDto.AssetDtoBuilder().withAmount(asset1).build(),
+                        new AssetDto.AssetDtoBuilder().withAmount(asset2).build()
+                );
 
     }
 
@@ -98,6 +102,19 @@ class AssetsServiceTest {
 
         //then
         then(assetsRepository).should(times(1)).save(entity);
+    }
+
+    @Test
+    void shouldVerifyIfTheRepositoryUpdateWasCalled() {
+        //given
+        AssetDto dto = new AssetDto.AssetDtoBuilder().withAmount(new BigDecimal(2)).build();
+        Asset entity = new Asset.AssetBuilder().withAmount(new BigDecimal(2)).build();
+        given(assetsRepository.findById(any())).willReturn(Optional.of(entity));
+        //when
+        assetsService.updateAsset(dto);
+        //then
+        then(assetsRepository).should().saveAndFlush(entity);
+
     }
 
     @Test
